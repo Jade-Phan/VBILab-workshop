@@ -5,7 +5,7 @@ pub struct School<T> {
     students: HashMap<String,T>
 }
 
-impl<T:Copy+Clone+ std::cmp::Ord> School<T> {
+impl<T: std::cmp::Ord> School<T> {
     pub fn new() -> School<T> {
         School{
             students: HashMap::new()
@@ -16,11 +16,10 @@ impl<T:Copy+Clone+ std::cmp::Ord> School<T> {
         self.students.insert(student.parse().unwrap(), grade);
     }
 
-    pub fn grades(&self) -> Vec<T> {
-        let grades = self.students.values();
-        let mut result:Vec<T> = Vec::new();
-        for x in grades.into_iter(){
-            result.push((*x.borrow()).clone());
+    pub fn grades(&self) -> Vec<&T> {
+        let mut result:Vec<&T> = Vec::new();
+        for (_,x) in self.students.iter(){
+            result.push(x);
         }
         result.sort();
         result.dedup();
@@ -52,15 +51,15 @@ fn main() {
 
     println!("{:?}",school.grade(5));
 
-    // let mut school2:School<String> = School::<String>::new();
-    // school2.add("A".to_string(),String::from("Jade"));
-    // school2.add("B".to_string(),String::from("Heal"));
-    // school2.add("B".to_string(),"Alice".to_string());
-    // school2.add("B+".to_string(),"Liam".to_string());
-    // school2.add("A".to_string(),"Alice".to_string());
-    // school2.add("A".to_string(),"Lily".to_string());
-    //
-    // println!("{:?}",school2.grades());
-    //
-    // println!("{:?}",school2.grade("A".to_string()));
+    let mut school2:School<String> = School::<String>::new();
+    school2.add("A".to_string(),String::from("Jade"));
+    school2.add("B".to_string(),String::from("Heal"));
+    school2.add("B".to_string(),"Alice".to_string());
+    school2.add("B+".to_string(),"Liam".to_string());
+    school2.add("A".to_string(),"Alice".to_string());
+    school2.add("A".to_string(),"Lily".to_string());
+
+    println!("{:?}",school2.grades());
+
+    println!("{:?}",school2.grade("A".to_string()));
 }
